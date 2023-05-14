@@ -61,6 +61,35 @@ extrn exit:near
 public main
 main proc
 
+;Verificar edad mayor o igual a 18 años
+.IF edad >= 18
+    mov AH, ageAprov
+.ELSE
+    jmp noaprov
+.ENDIF
+
+
+
+;Verificar monto solicitado menor a 400% del salario actual
+    mov ax, [ingresosM]
+    imul eax, 4
+    cmp eax, [montoSoli]
+    jl noaprov
+    mov dword [monto_aprobado], [montoSoli]
+
+;Verificar al menos 1 año de estabilidad laboral
+.IF mesesCL >= 12
+    mov edx, 'OK'
+.ELSE    
+    jmp noaprov
+.ENDIF   
+
+;Verificar calificación en Super Intendencia de Bancos es "A"
+.IF calificacion == 'A'
+    mov edx, 'OK'
+.ELSE
+    jmp noaprov
+.ENDIF
 
 
 
