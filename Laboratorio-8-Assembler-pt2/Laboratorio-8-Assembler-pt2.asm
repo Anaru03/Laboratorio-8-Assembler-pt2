@@ -20,9 +20,9 @@ ExitProcess proto,dwExitCode:dword
 .data
 noAplica DWORD 0
 
-nameApe db "Nombre y Apellido: Mariana Rosales ", 0Ah, 0
+nameApe db "Nombre y Apellido    Mariana Rosales ", 0Ah, 0
 edad db 30
-age byte "Edad: %d años ", 0Ah, 0
+age byte "Edad                 30 ", 0Ah, 0
 montoSoli dd 30000
 mensualidad byte "Ingresos mensuales: Q%d ", 0Ah, 0
 ingresosAge dw 20000
@@ -30,11 +30,10 @@ calificacion dd "A" ; Excelente, "B" para bueno, "C" para regular, "D" para malo
 aprov db "Aprobado", 0
 noAprov db "No Aprobado", 0
 ageEL dd 3
-MontoPS byte "Monto solicitado: Q%d ", 0Ah, 0
+MontoPS byte "Monto solicitado: ", 0Ah, 0
 calificacionSIB byte "Calificación promedio SIB: %c ", 0Ah, 0
 
-msg1 byte "Datos         Valor         Aprobado ", 0Ah, 0
-msg2 byte "null"
+msg1 byte "Datos                Valor                Aprobado ", 0Ah, 0
 msg3Aprov db "El préstamo se puede otorgar. ", 0Ah, 0
 msg4NoAprov db "El préstamo no puede ser otorgado. ", 0Ah, 0
 
@@ -55,12 +54,23 @@ public main
 main proc
 
 
+push OFFSET msg1
+call printf
+
+push OFFSET nameApe
+call printf
+
+push OFFSET age
+call printf
+add esp, 8 ; limpiar los argumentos de la pila
+
 ;Verificar edad mayor o igual a 18 años
 .IF byte ptr [edad] >= 18
     mov edx, OFFSET aprov
 .ELSE
     mov edx, OFFSET noAprov
 .ENDIF
+
 
 
 ;Verificar monto solicitado menor o igual a 400% del salario actual
