@@ -13,8 +13,9 @@
 .386
 .model flat, stdcall, c
 
+
 .stack 4096
-;ExitProcess proto,dwExitCode:dword
+ExitProcess proto,dwExitCode:dword
 
 .data
 noAplica DWORD 0
@@ -26,24 +27,16 @@ montoSoli dd 30000
 mensualidad byte "Ingresos mensuales: Q%d ", 0Ah, 0
 ingresosM dw 20000
 calificacion db "A" ; Excelente, "B" para bueno, "C" para regular, "D" para malo, "E" para fatal, 0Ah, 0
-aprov db "OK", 0Ah, 0
-noAprov "Denegado", 0Ah, 0
-mesesCL db 16
+aprov db "Aprobado", 0
+noAprov db "No Aprobado", 0
+ageEL dd 3
 MontoPS byte "Monto solicitado: Q%d ", 0Ah, 0
 calificacionSIB byte "Calificación promedio SIB: %c ", 0Ah, 0
 
 msg1 byte "Datos         Valor         Aprobado ", 0Ah, 0
-msg2 byte ""
+msg2 byte "null"
 msg3Aprov db "El préstamo se puede otorgar. ", 0Ah, 0
 msg4NoAprov db "El préstamo no puede ser otorgado. ", 0Ah, 0
-
-
-;ingresosAprov db "OK", 0Ah, 0
-;mesesTAprov db "OK", 0Ah, 0
-;calificacionAprov db "OK", 0Ah, 0
-
-
-
 
 
 
@@ -52,37 +45,57 @@ includelib libucrt.lib
 includelib legacy_stdio_definitions.lib
 includelib libcmt.lib
 includelib libvcruntime.lib
-includelib msvcrt.lib
+
 
 extrn printf:near
 extrn exit:near
 
 
+
 public main
 main proc
+;https://slideplayer.com/slide/5323880/ referencia
+
+invoke printf, addr msg2
+invoke printf, addr msg1
+invoke printf, addr nameApe
+invoke printf, addr age, edad
 
 ;Verificar edad mayor o igual a 18 años
-.IF edad >= 18
-    mov AH, ageAprov
+.IF byte ptr [edad] >= 18
+    mov edx, OFFSET aprov
 .ELSE
-    jmp noaprov
+    mov edx, OFFSET noAprov
+.ENDIF
+
+
+;Verificar monto solicitado menor o igual a 400% del salario actual
+mov ax, [ingresosM] 
+mov ebx, [montoSoli] 
+
+mov ecx, 400         
+mul ecx              
+
+cmp ebx, eax         
+.IF montoAprobado 
+    mov edx, OFFSET aprov
+.ELSE                
+    mov edx, OFFSET noAprov
+    mov noAplica, 1
 .ENDIF
 
 
 
-;Verificar monto solicitado menor a 400% del salario actual
-    mov ax, [ingresosM]
-    imul eax, 4
-    cmp eax, [montoSoli]
-    jl noaprov
-    mov dword [monto_aprobado], [montoSoli]
 
 ;Verificar al menos 1 año de estabilidad laboral
-.IF mesesCL >= 12
-    mov edx, 'OK'
+mov eax, [ageEL]
+.IF eax >= 1
+    mov edx, OFFSET aprov
 .ELSE    
-    jmp noaprov
+    mov edx, OFFSET noAprov
 .ENDIF   
+
+
 
 ;Verificar calificación en Super Intendencia de Bancos es "A"
 .IF calificacion == 'A'
@@ -92,7 +105,7 @@ main proc
 .ENDIF
 
 
-
+RET
 
 
 
