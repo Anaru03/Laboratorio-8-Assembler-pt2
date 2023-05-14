@@ -25,8 +25,8 @@ edad db 30
 age byte "Edad: %d años ", 0Ah, 0
 montoSoli dd 30000
 mensualidad byte "Ingresos mensuales: Q%d ", 0Ah, 0
-ingresosM dw 20000
-calificacion db "A" ; Excelente, "B" para bueno, "C" para regular, "D" para malo, "E" para fatal, 0Ah, 0
+ingresosAge dw 20000
+calificacion dd "A" ; Excelente, "B" para bueno, "C" para regular, "D" para malo, "E" para fatal, 0Ah, 0
 aprov db "Aprobado", 0
 noAprov db "No Aprobado", 0
 ageEL dd 3
@@ -46,7 +46,6 @@ includelib legacy_stdio_definitions.lib
 includelib libcmt.lib
 includelib libvcruntime.lib
 
-
 extrn printf:near
 extrn exit:near
 
@@ -54,12 +53,7 @@ extrn exit:near
 
 public main
 main proc
-;https://slideplayer.com/slide/5323880/ referencia
 
-invoke printf, addr msg2
-invoke printf, addr msg1
-invoke printf, addr nameApe
-invoke printf, addr age, edad
 
 ;Verificar edad mayor o igual a 18 años
 .IF byte ptr [edad] >= 18
@@ -70,21 +64,19 @@ invoke printf, addr age, edad
 
 
 ;Verificar monto solicitado menor o igual a 400% del salario actual
-mov ax, [ingresosM] 
+mov ax, [ingresosAge] 
 mov ebx, [montoSoli] 
 
 mov ecx, 400         
 mul ecx              
 
 cmp ebx, eax         
-.IF montoAprobado 
+.IF ingresosAge 
     mov edx, OFFSET aprov
 .ELSE                
     mov edx, OFFSET noAprov
     mov noAplica, 1
 .ENDIF
-
-
 
 
 ;Verificar al menos 1 año de estabilidad laboral
@@ -98,22 +90,17 @@ mov eax, [ageEL]
 
 
 ;Verificar calificación en Super Intendencia de Bancos es "A"
-.IF calificacion == 'A'
-    mov edx, 'OK'
+mov eax, [calificacion]
+cmp eax, "A"
+
+.IF calificacion == "A"
+    mov edx, OFFSET aprov
 .ELSE
-    jmp noaprov
+    mov edx, OFFSET noAprov
 .ENDIF
 
 
 RET
-
-
-
-
-
-
-
-
 
 
 
