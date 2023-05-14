@@ -17,14 +17,33 @@
 ;ExitProcess proto,dwExitCode:dword
 
 .data
-nameApe db "Juan Perez ", 0Ah, 0
+noAplica DWORD 0
+
+nameApe db "Nombre y Apellido: Mariana Rosales ", 0Ah, 0
 edad db 30
 age byte "Edad: %d años ", 0Ah, 0
+montoSoli dd 30000
+mensualidad byte "Ingresos mensuales: Q%d ", 0Ah, 0
 ingresosM dw 20000
-Mensualidad byte "Ingresos mensuales: Q%d ", 0Ah, 0
+calificacion db "A" ; Excelente, "B" para bueno, "C" para regular, "D" para malo, "E" para fatal, 0Ah, 0
+aprov db "OK", 0Ah, 0
+noAprov "Denegado", 0Ah, 0
 mesesCL db 16
-montoSoli dd 80000 
-calificacion db "A"",0
+MontoPS byte "Monto solicitado: Q%d ", 0Ah, 0
+calificacionSIB byte "Calificación promedio SIB: %c ", 0Ah, 0
+
+msg1 byte "Datos         Valor         Aprobado ", 0Ah, 0
+msg2 byte ""
+msg3Aprov db "El préstamo se puede otorgar. ", 0Ah, 0
+msg4NoAprov db "El préstamo no puede ser otorgado. ", 0Ah, 0
+
+
+;ingresosAprov db "OK", 0Ah, 0
+;mesesTAprov db "OK", 0Ah, 0
+;calificacionAprov db "OK", 0Ah, 0
+
+
+
 
 
 
@@ -41,6 +60,20 @@ extrn exit:near
 
 public main
 main proc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 salir:
 
